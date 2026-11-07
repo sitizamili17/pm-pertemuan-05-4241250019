@@ -1,26 +1,52 @@
 import 'package:material_ui/material_ui.dart';
 
-/// Satu-satunya warna yang ditulis langsung: seed color tema (cokelat rendang).
-const Color _warnaSeed = Color(0xFF7B2D12);
+/// Satu-satunya warna yang ditulis langsung: seed color tema (perunggu rendang).
+const Color _warnaSeed = Color(0xFF8B5A2B);
 
-/// Font judul bergaya serif (tampil di Android; web bisa memakai font bawaan).
+/// Font judul bergaya serif (tampil jelas di Android).
 const String _fontJudul = 'serif';
 
 /// Data satu menu.
 class ItemMenu {
-  const ItemMenu(this.nama, this.harga, this.kategori);
+  const ItemMenu(this.nama, this.harga, this.kategori, this.deskripsi);
 
   final String nama;
   final int harga;
   final String kategori;
+  final String deskripsi;
 }
 
 const List<ItemMenu> daftarMenu = [
-  ItemMenu('Rendang Daging Sapi', 48000, 'Hidangan Utama'),
-  ItemMenu('Nasi Rendang Komplit', 55000, 'Paket'),
-  ItemMenu('Rendang Telur', 22000, 'Hidangan Utama'),
-  ItemMenu('Teh Talua', 18000, 'Minuman'),
-  ItemMenu('Kerupuk Jangek', 12000, 'Camilan'),
+  ItemMenu(
+    'Rendang Daging Sapi',
+    48000,
+    'Hidangan Utama',
+    'Dimasak berjam-jam dengan santan kental dan rempah pilihan.',
+  ),
+  ItemMenu(
+    'Nasi Rendang Komplit',
+    55000,
+    'Paket',
+    'Rendang, nasi putih, daun singkong, dan sambal hijau.',
+  ),
+  ItemMenu(
+    'Rendang Telur',
+    22000,
+    'Hidangan Utama',
+    'Telur rebus berbumbu rendang, gurih dan pedas.',
+  ),
+  ItemMenu(
+    'Teh Talua',
+    18000,
+    'Minuman',
+    'Teh hangat dengan kuning telur dan jeruk nipis.',
+  ),
+  ItemMenu(
+    'Kerupuk Jangek',
+    12000,
+    'Camilan',
+    'Kerupuk kulit renyah, pendamping rendang.',
+  ),
 ];
 
 /// Mengubah 48000 menjadi "Rp48.000".
@@ -44,16 +70,49 @@ IconData _ikonKategori(String kategori) => switch (kategori) {
 /// Bentuk kartu seragam: sudut melengkung dengan garis tepi halus.
 RoundedRectangleBorder _bentukKartu(ColorScheme skema) {
   return RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(20),
+    borderRadius: BorderRadius.circular(24),
     side: BorderSide(color: skema.outlineVariant),
   );
 }
 
-/// Gaya judul bagian (serif, tebal).
-TextStyle? _judulBagian(TextTheme teks) {
-  return teks.titleLarge?.copyWith(
-    fontFamily: _fontJudul,
-    fontWeight: FontWeight.w700,
+/// Ornamen pemisah: garis, berlian kecil, garis.
+Widget _ornamen(ColorScheme skema) {
+  return Row(
+    children: [
+      Expanded(child: Divider(color: skema.outlineVariant)),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Icon(Icons.diamond_outlined, size: 14, color: skema.primary),
+      ),
+      Expanded(child: Divider(color: skema.outlineVariant)),
+    ],
+  );
+}
+
+/// Judul bagian dengan keterangan opsional (parameter bernama).
+Widget _judulBagian(BuildContext context, String judul, {String? keterangan}) {
+  final skema = Theme.of(context).colorScheme;
+  final teks = Theme.of(context).textTheme;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        judul,
+        style: teks.titleLarge?.copyWith(
+          fontFamily: _fontJudul,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      if (keterangan != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            keterangan,
+            style: teks.bodyMedium?.copyWith(color: skema.onSurfaceVariant),
+          ),
+        ),
+    ],
   );
 }
 
@@ -96,131 +155,23 @@ class HalamanMenu extends StatelessWidget {
     final teks = Theme.of(context).textTheme;
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Menu UMKM Kuliner')),
       body: SafeArea(
+        bottom: false,
         child: Center(
           // Lebar dibatasi supaya di layar lebar tetap seperti tampilan HP.
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Gambar utama dengan label
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(28),
-                    child: AspectRatio(
-                      aspectRatio: 16 / 10,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.asset(
-                            'assets/images/header.jpg',
-                            fit: BoxFit.cover,
-                            // Cadangan bila gambar tidak ditemukan
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                              color: skema.primaryContainer,
-                              child: Center(
-                                child: Icon(
-                                  Icons.restaurant,
-                                  size: 64,
-                                  color: skema.onPrimaryContainer,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            top: 12,
-                            left: 12,
-                            child: Chip(
-                              avatar: Icon(Icons.star_rounded, size: 18),
-                              label: Text('Khas Minang'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Identitas usaha
-                  Text(
-                    'MASAKAN MINANG  ·  SEJAK 1998',
-                    style: teks.labelMedium?.copyWith(
-                      color: skema.primary,
-                      letterSpacing: 2,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Rendang Uni Sari',
-                    style: teks.headlineLarge?.copyWith(
-                      fontFamily: _fontJudul,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    width: 48,
-                    height: 3,
-                    decoration: BoxDecoration(
-                      color: skema.primary,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Rendang daging sapi dimasak perlahan berjam-jam dengan '
-                    'santan kental dan rempah pilihan, sesuai resep warisan '
-                    'keluarga.',
-                    style: teks.bodyLarge?.copyWith(
-                      color: skema.onSurfaceVariant,
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Dua tombol aksi
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FilledButton.icon(
-                          onPressed: () =>
-                              _info(context, 'Membuka WhatsApp (simulasi)'),
-                          icon: const Icon(Icons.chat),
-                          label: const Text('Pesan'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () =>
-                              _info(context, 'Membuka peta (simulasi)'),
-                          icon: const Icon(Icons.map_outlined),
-                          label: const Text('Lokasi'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-
-                  // Kontak: Card + ListTile (3 baris)
-                  Text('Hubungi Kami', style: _judulBagian(teks)),
-                  const SizedBox(height: 12),
-                  Card(
-                    elevation: 0,
-                    margin: EdgeInsets.zero,
-                    color: skema.surfaceContainerLow,
-                    shape: _bentukKartu(skema),
-                    child: const Column(
+                  // Kepala: gambar penuh lebar, memudar ke warna latar
+                  SizedBox(
+                    height: 340,
+                    child: Stack(
+                      fit: StackFit.expand,
                       children: [
-<<<<<<< HEAD
-                        ListTile(
-                          leading: Icon(Icons.phone_outlined),
-                          title: Text('+62 812-3456-7890'),
-=======
                         Image.asset(
                           'assets/images/header.jpg',
                           fit: BoxFit.cover,
@@ -236,32 +187,66 @@ class HalamanMenu extends StatelessWidget {
                                   ),
                                 ),
                               ),
->>>>>>> 0629563 (Commit 3: tambah widget test dan rapikan kode)
                         ),
-                        Divider(height: 1, indent: 16, endIndent: 16),
-                        ListTile(
-                          leading: Icon(Icons.email_outlined),
-                          title: Text('halo@rendangunisari.example'),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: const [0.4, 1.0],
+                              colors: [
+                                skema.surface.withValues(alpha: 0),
+                                skema.surface,
+                              ],
+                            ),
+                          ),
                         ),
-                        Divider(height: 1, indent: 16, endIndent: 16),
-                        ListTile(
-                          leading: Icon(Icons.location_on_outlined),
-                          title: Text('Jl. Contoh No. 12, Medan'),
+                        Positioned(
+                          top: 16,
+                          left: 20,
+                          child: Chip(
+                            avatar: Icon(
+                              Icons.star_rounded,
+                              size: 18,
+                              color: skema.primary,
+                            ),
+                            label: const Text('Khas Minang'),
+                            backgroundColor: skema.surface,
+                            side: BorderSide.none,
+                          ),
+                        ),
+                        Positioned(
+                          left: 20,
+                          right: 20,
+                          bottom: 8,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'MASAKAN MINANG  ·  SEJAK 1998',
+                                style: teks.labelMedium?.copyWith(
+                                  color: skema.primary,
+                                  letterSpacing: 3,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Rendang Uni Sari',
+                                style: teks.headlineLarge?.copyWith(
+                                  fontFamily: _fontJudul,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 28),
 
-<<<<<<< HEAD
-                  // Daftar menu
-                  Text('Menu Pilihan', style: _judulBagian(teks)),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Ketuk ikon hati untuk menandai favorit',
-                    style: teks.bodyMedium?.copyWith(
-                      color: skema.onSurfaceVariant,
-=======
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
                     child: Column(
@@ -350,7 +335,7 @@ class HalamanMenu extends StatelessWidget {
                               Divider(height: 1, indent: 16, endIndent: 16),
                               ListTile(
                                 leading: Icon(Icons.email_outlined),
-                                title: Text('halo@rendangunisari.example'),
+                                title: Text('rendangunisari@gmail.com'),
                               ),
                               Divider(height: 1, indent: 16, endIndent: 16),
                               ListTile(
@@ -360,7 +345,7 @@ class HalamanMenu extends StatelessWidget {
                               Divider(height: 1, indent: 16, endIndent: 16),
                               ListTile(
                                 leading: Icon(Icons.location_on_outlined),
-                                title: Text('Jl. Contoh No. 12, Medan'),
+                                title: Text('Jl. Surbakti No. 12, Medan'),
                               ),
                             ],
                           ),
@@ -396,16 +381,8 @@ class HalamanMenu extends StatelessWidget {
                           ),
                         ),
                       ],
->>>>>>> 0629563 (Commit 3: tambah widget test dan rapikan kode)
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  for (final item in daftarMenu)
-                    KartuMenu(
-                      nama: item.nama,
-                      harga: item.harga,
-                      kategori: item.kategori,
-                    ),
                 ],
               ),
             ),
@@ -423,11 +400,13 @@ class KartuMenu extends StatelessWidget {
     required this.nama,
     required this.harga,
     required this.kategori,
+    required this.deskripsi,
   });
 
   final String nama;
   final int harga;
   final String kategori;
+  final String deskripsi;
 
   @override
   Widget build(BuildContext context) {
@@ -436,27 +415,28 @@ class KartuMenu extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 14),
       color: skema.surfaceContainerLow,
       shape: _bentukKartu(skema),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kotak ikon sesuai kategori
+            // Ikon bulat sesuai kategori
             Container(
-              width: 56,
-              height: 56,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: skema.primaryContainer,
-                borderRadius: BorderRadius.circular(16),
+                shape: BoxShape.circle,
               ),
               child: Icon(
                 _ikonKategori(kategori),
                 color: skema.onPrimaryContainer,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,26 +444,42 @@ class KartuMenu extends StatelessWidget {
                   Text(
                     nama,
                     style: teks.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontFamily: _fontJudul,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _rupiah(harga),
-                    style: teks.titleSmall?.copyWith(
-                      color: skema.primary,
-                      fontWeight: FontWeight.w700,
+                    deskripsi,
+                    style: teks.bodySmall?.copyWith(
+                      color: skema.onSurfaceVariant,
+                      height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Chip(
-                    label: Text(kategori),
-                    visualDensity: VisualDensity.compact,
-                    side: BorderSide.none,
-                    backgroundColor: skema.secondaryContainer,
-                    labelStyle: teks.labelMedium?.copyWith(
-                      color: skema.onSecondaryContainer,
-                    ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        _rupiah(harga),
+                        style: teks.titleMedium?.copyWith(
+                          fontFamily: _fontJudul,
+                          color: skema.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Chip(
+                        label: Text(kategori),
+                        visualDensity: VisualDensity.compact,
+                        side: BorderSide.none,
+                        backgroundColor: skema.secondaryContainer,
+                        labelStyle: teks.labelMedium?.copyWith(
+                          color: skema.onSecondaryContainer,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
