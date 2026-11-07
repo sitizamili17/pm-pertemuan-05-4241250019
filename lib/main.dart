@@ -26,20 +26,20 @@ const List<ItemMenu> daftarMenu = [
 /// Mengubah 48000 menjadi "Rp48.000".
 String _rupiah(int n) {
   final angka = n.toString().replaceAllMapped(
-        RegExp(r'\B(?=(\d{3})+(?!\d))'),
-        (m) => '.',
-      );
+    RegExp(r'\B(?=(\d{3})+(?!\d))'),
+    (m) => '.',
+  );
   return 'Rp$angka';
 }
 
 /// Ikon menu berdasarkan kategorinya.
 IconData _ikonKategori(String kategori) => switch (kategori) {
-      'Hidangan Utama' => Icons.restaurant,
-      'Paket' => Icons.lunch_dining,
-      'Minuman' => Icons.local_cafe,
-      'Camilan' => Icons.fastfood,
-      _ => Icons.restaurant_menu,
-    };
+  'Hidangan Utama' => Icons.restaurant,
+  'Paket' => Icons.lunch_dining,
+  'Minuman' => Icons.local_cafe,
+  'Camilan' => Icons.fastfood,
+  _ => Icons.restaurant_menu,
+};
 
 /// Bentuk kartu seragam: sudut melengkung dengan garis tepi halus.
 RoundedRectangleBorder _bentukKartu(ColorScheme skema) {
@@ -87,9 +87,7 @@ class HalamanMenu extends StatelessWidget {
   const HalamanMenu({super.key});
 
   void _info(BuildContext context, String pesan) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(pesan)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(pesan)));
   }
 
   @override
@@ -218,9 +216,27 @@ class HalamanMenu extends StatelessWidget {
                     shape: _bentukKartu(skema),
                     child: const Column(
                       children: [
+<<<<<<< HEAD
                         ListTile(
                           leading: Icon(Icons.phone_outlined),
                           title: Text('+62 812-3456-7890'),
+=======
+                        Image.asset(
+                          'assets/images/header.jpg',
+                          fit: BoxFit.cover,
+                          // Cadangan bila gambar tidak ditemukan
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: skema.primaryContainer,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.restaurant,
+                                    size: 64,
+                                    color: skema.onPrimaryContainer,
+                                  ),
+                                ),
+                              ),
+>>>>>>> 0629563 (Commit 3: tambah widget test dan rapikan kode)
                         ),
                         Divider(height: 1, indent: 16, endIndent: 16),
                         ListTile(
@@ -237,6 +253,7 @@ class HalamanMenu extends StatelessWidget {
                   ),
                   const SizedBox(height: 28),
 
+<<<<<<< HEAD
                   // Daftar menu
                   Text('Menu Pilihan', style: _judulBagian(teks)),
                   const SizedBox(height: 4),
@@ -244,6 +261,142 @@ class HalamanMenu extends StatelessWidget {
                     'Ketuk ikon hati untuk menandai favorit',
                     style: teks.bodyMedium?.copyWith(
                       color: skema.onSurfaceVariant,
+=======
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Rating
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.star_rounded,
+                              color: skema.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '4,9',
+                              style: teks.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '· 1.200+ ulasan',
+                              style: teks.bodyMedium?.copyWith(
+                                color: skema.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        _ornamen(skema),
+                        const SizedBox(height: 16),
+
+                        // Deskripsi usaha
+                        Text(
+                          'Rendang daging sapi dimasak perlahan berjam-jam '
+                          'dengan santan kental dan rempah pilihan, sesuai '
+                          'resep warisan keluarga.',
+                          style: teks.bodyLarge?.copyWith(
+                            color: skema.onSurfaceVariant,
+                            height: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Dua tombol aksi
+                        Row(
+                          children: [
+                            Expanded(
+                              child: FilledButton.icon(
+                                onPressed: () => _info(
+                                  context,
+                                  'Membuka WhatsApp (simulasi)',
+                                ),
+                                icon: const Icon(Icons.chat),
+                                label: const Text('Pesan'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () =>
+                                    _info(context, 'Membuka peta (simulasi)'),
+                                icon: const Icon(Icons.map_outlined),
+                                label: const Text('Lokasi'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Kontak: Card + ListTile (4 baris)
+                        _judulBagian(context, 'Hubungi Kami'),
+                        const SizedBox(height: 12),
+                        Card(
+                          elevation: 0,
+                          margin: EdgeInsets.zero,
+                          color: skema.surfaceContainerLow,
+                          shape: _bentukKartu(skema),
+                          child: const Column(
+                            children: [
+                              ListTile(
+                                leading: Icon(Icons.phone_outlined),
+                                title: Text('+62 812-3456-7890'),
+                              ),
+                              Divider(height: 1, indent: 16, endIndent: 16),
+                              ListTile(
+                                leading: Icon(Icons.email_outlined),
+                                title: Text('halo@rendangunisari.example'),
+                              ),
+                              Divider(height: 1, indent: 16, endIndent: 16),
+                              ListTile(
+                                leading: Icon(Icons.schedule_outlined),
+                                title: Text('Setiap hari, 10.00 - 21.00 WIB'),
+                              ),
+                              Divider(height: 1, indent: 16, endIndent: 16),
+                              ListTile(
+                                leading: Icon(Icons.location_on_outlined),
+                                title: Text('Jl. Contoh No. 12, Medan'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Daftar menu
+                        _judulBagian(
+                          context,
+                          'Menu Pilihan',
+                          keterangan: 'Ketuk ikon hati untuk menandai favorit',
+                        ),
+                        const SizedBox(height: 16),
+                        for (final item in daftarMenu)
+                          KartuMenu(
+                            nama: item.nama,
+                            harga: item.harga,
+                            kategori: item.kategori,
+                            deskripsi: item.deskripsi,
+                          ),
+                        const SizedBox(height: 16),
+
+                        // Penutup
+                        _ornamen(skema),
+                        const SizedBox(height: 12),
+                        Center(
+                          child: Text(
+                            '© 2026 Rendang Uni Sari · Medan',
+                            style: teks.labelSmall?.copyWith(
+                              color: skema.onSurfaceVariant,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ),
+                      ],
+>>>>>>> 0629563 (Commit 3: tambah widget test dan rapikan kode)
                     ),
                   ),
                   const SizedBox(height: 12),

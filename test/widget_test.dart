@@ -7,7 +7,10 @@ void main() {
     await tester.pumpWidget(const UmkmApp());
 
     // Awalnya semua menu belum favorit.
-    expect(find.byIcon(Icons.favorite_border), findsNWidgets(daftarMenu.length));
+    expect(
+      find.byIcon(Icons.favorite_border),
+      findsNWidgets(daftarMenu.length),
+    );
     expect(find.byIcon(Icons.favorite), findsNothing);
 
     // Tekan tombol favorit menu pertama.
@@ -50,6 +53,10 @@ void main() {
     );
     expect(find.byType(SnackBar), findsOneWidget);
   });
+<<<<<<< HEAD
 }Type(SnackBar), findsOneWidget);
   });
 }
+=======
+}
+>>>>>>> 0629563 (Commit 3: tambah widget test dan rapikan kode)
